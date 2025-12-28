@@ -23,9 +23,10 @@ async function getChatResponse(message, conversationHistory = []) {
       throw new Error('Google AI API key is not configured');
     }
 
-    // Use gemini-1.5-flash or gemini-1.5-pro instead of gemini-pro
-    // gemini-1.5-flash is faster and more cost-effective
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    // Use gemini-2.5-flash (latest stable model, faster and more cost-effective)
+    // Alternative: gemini-2.5-pro for better quality (slower, more expensive)
+    const modelName = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+    const model = genAI.getGenerativeModel({ model: modelName });
 
     // Build conversation context
     let prompt = '';
@@ -74,9 +75,10 @@ async function* getChatResponseStream(message, conversationHistory = []) {
       throw new Error('Google AI API key is not configured');
     }
 
-    // Use gemini-1.5-flash or gemini-1.5-pro instead of gemini-pro
-    // gemini-1.5-flash is faster and more cost-effective
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    // Use gemini-2.5-flash (latest stable model, faster and more cost-effective)
+    // Alternative: gemini-2.5-pro for better quality (slower, more expensive)
+    const modelName = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+    const model = genAI.getGenerativeModel({ model: modelName });
 
     // Build conversation context
     let prompt = '';
