@@ -99,7 +99,18 @@ async function synthesizeSpeech(text, options = {}) {
     return Buffer.from(response.data);
   } catch (error) {
     console.error('Error synthesizing speech:', error.response?.data || error.message);
-    throw new Error(`Failed to synthesize speech: ${error.response?.data?.detail?.message || error.message}`);
+    const errorDetail = error.response?.data?.detail;
+    let errorMessage = 'Failed to synthesize speech';
+    
+    if (error.response?.status === 401) {
+      errorMessage = 'Authentication failed. Please check your ElevenLabs API key in Render environment variables.';
+    } else if (errorDetail?.message) {
+      errorMessage = `Failed to synthesize speech: ${errorDetail.message}`;
+    } else if (error.message) {
+      errorMessage = `Failed to synthesize speech: ${error.message}`;
+    }
+    
+    throw new Error(errorMessage);
   }
 }
 
