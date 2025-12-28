@@ -54,9 +54,10 @@ function ChatInterface({ voiceId, disabled }) {
       }
     } catch (error) {
       console.error('Chat error:', error);
+      const errorMessage = error.response?.data?.error || error.message || 'An unknown error occurred';
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: 'Sorry, an error occurred. Please check your API configuration.',
+        content: `Sorry, an error occurred: ${errorMessage}`,
         error: true
       }]);
     } finally {
