@@ -16,6 +16,7 @@ function App() {
   const loadVoices = useCallback(async () => {
     try {
       setLoading(true);
+      setError(null);
       const response = await axios.get(`${API_BASE_URL}/voice/list`);
       setVoices(response.data.voices || []);
       // Set the first voice as default if available
@@ -24,7 +25,8 @@ function App() {
       }
     } catch (err) {
       console.error('Error loading voices:', err);
-      setError('Failed to load voices');
+      const errorMessage = err.response?.data?.error || err.message || 'Failed to load voices';
+      setError(`Failed to load voices: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
