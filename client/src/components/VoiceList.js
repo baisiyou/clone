@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './VoiceList.css';
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+import { API_BASE_URL } from '../config';
 
 function VoiceList({ voices, currentVoiceId, onVoiceSelect, onVoiceDeleted }) {
   const [deleting, setDeleting] = useState(null);

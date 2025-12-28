@@ -4,8 +4,12 @@ import VoiceCloneUpload from './components/VoiceCloneUpload';
 import ChatInterface from './components/ChatInterface';
 import VoiceList from './components/VoiceList';
 import axios from 'axios';
+import { API_BASE_URL } from './config';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+// Log API URL in production for debugging
+if (process.env.NODE_ENV === 'production') {
+  console.log('API Base URL:', API_BASE_URL);
+}
 
 function App() {
   const [currentVoiceId, setCurrentVoiceId] = useState('');

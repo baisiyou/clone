@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import './ChatInterface.css';
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+import { API_BASE_URL } from '../config';
 
 function ChatInterface({ voiceId, disabled }) {
   const [messages, setMessages] = useState([]);
