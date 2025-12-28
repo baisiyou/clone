@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import VoiceCloneUpload from './components/VoiceCloneUpload';
 import ChatInterface from './components/ChatInterface';
@@ -13,11 +13,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    loadVoices();
-  }, []);
-
-  const loadVoices = async () => {
+  const loadVoices = useCallback(async () => {
     try {
       setLoading(true);
       const response = await axios.get(`${API_BASE_URL}/voice/list`);
@@ -32,7 +28,11 @@ function App() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentVoiceId]);
+
+  useEffect(() => {
+    loadVoices();
+  }, [loadVoices]);
 
   const handleVoiceCloned = (voiceId) => {
     setCurrentVoiceId(voiceId);

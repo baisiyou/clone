@@ -88,6 +88,8 @@ function ChatInterface({ voiceId, disabled }) {
       };
 
       mediaRecorder.onstop = async () => {
+        // Create audio blob for future speech-to-text implementation
+        // eslint-disable-next-line no-unused-vars
         const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
         // Here you could convert speech to text using Web Speech API or a service
         // For now, we'll just show a message
