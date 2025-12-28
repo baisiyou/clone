@@ -49,7 +49,6 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>🎙️ Voice Clone Chat</h1>
-        <p>Voice Cloning with ElevenLabs + AI Conversation with Google Gemini</p>
       </header>
 
       <div className="App-container">
