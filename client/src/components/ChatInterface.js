@@ -33,9 +33,11 @@ function ChatInterface({ voiceId, disabled }) {
     setMessages(prev => [...prev, newUserMessage]);
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/chat/voice-chat`, {
+      // Use voice-chat endpoint only if voiceId is provided, otherwise use text-chat
+      const endpoint = voiceId ? 'voice-chat' : 'text-chat';
+      const response = await axios.post(`${API_BASE_URL}/chat/${endpoint}`, {
         message: userMessage,
-        voiceId: voiceId,
+        ...(voiceId && { voiceId: voiceId }),
         conversationHistory: conversationHistory
       });
 
@@ -48,7 +50,7 @@ function ChatInterface({ voiceId, disabled }) {
       setMessages(prev => [...prev, assistantMessage]);
       setConversationHistory(response.data.conversationHistory || []);
 
-      // Play audio response
+      // Play audio response only if available
       if (response.data.audio) {
         playAudio(response.data.audio);
       }

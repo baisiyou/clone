@@ -15,20 +15,28 @@ router.post('/voice-chat', async (req, res, next) => {
     // Step 1: Get AI response from Gemini
     const aiResponse = await chatService.getChatResponse(message, conversationHistory);
 
-    // Step 2: Synthesize speech using cloned voice
-    const audioBuffer = await voiceService.synthesizeSpeech(aiResponse.text, {
-      voiceId: voiceId || process.env.ELEVENLABS_VOICE_ID,
-      stability: 0.5,
-      similarityBoost: 0.75
-    });
+    // Step 2: Synthesize speech only if voiceId is provided
+    const effectiveVoiceId = voiceId || process.env.ELEVENLABS_VOICE_ID;
+    let audioBase64 = null;
 
-    // Convert audio buffer to base64 for easier transmission
-    const audioBase64 = audioBuffer.toString('base64');
+    if (effectiveVoiceId) {
+      try {
+        const audioBuffer = await voiceService.synthesizeSpeech(aiResponse.text, {
+          voiceId: effectiveVoiceId,
+          stability: 0.5,
+          similarityBoost: 0.75
+        });
+        audioBase64 = audioBuffer.toString('base64');
+      } catch (voiceError) {
+        // If voice synthesis fails, continue without audio
+        console.warn('Voice synthesis failed, returning text only:', voiceError.message);
+      }
+    }
 
     res.json({
       success: true,
       text: aiResponse.text,
-      audio: audioBase64,
+      ...(audioBase64 && { audio: audioBase64 }),
       conversationHistory: aiResponse.conversationHistory
     });
   } catch (error) {
