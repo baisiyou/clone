@@ -1,0 +1,35 @@
+{
+  "name": "sound-clone-voice-chat",
+  "version": "1.0.0",
+  "description": "Voice cloning application with AI conversation using ElevenLabs and Google Gemini",
+  "main": "server/index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "nodemon server/index.js",
+    "client": "cd client && npm start",
+    "install-all": "npm install && cd client && npm install",
+    "build": "cd client && npm run build"
+  },
+  "keywords": [
+    "voice-cloning",
+    "elevenlabs",
+    "gemini",
+    "ai-chat"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "multer": "^1.4.5-lts.1",
+    "axios": "^1.6.2",
+    "@google/generative-ai": "^0.2.1",
+    "form-data": "^4.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2",
+    "concurrently": "^8.2.2"
+  }
+}
+
