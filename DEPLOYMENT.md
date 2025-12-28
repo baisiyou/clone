@@ -175,7 +175,116 @@ docker-compose up -d
    vercel
    ```
 
-## Railway/Render 部署
+## GitHub Pages + Render 部署（推荐）
+
+本项目使用 GitHub Pages 部署前端，Render 部署后端。
+
+### 前端部署到 GitHub Pages
+
+#### 方式一：使用 GitHub Actions（推荐，已配置）
+
+项目已配置自动部署工作流。只需：
+
+1. **在 GitHub 仓库中启用 GitHub Pages**
+   - 进入仓库 Settings → Pages
+   - Source 选择 "GitHub Actions"
+
+2. **配置前端 API 地址（可选）**
+   - 如果后端已部署到 Render，在 GitHub 仓库 Settings → Secrets and variables → Actions 中添加：
+     - Name: `REACT_APP_API_URL`
+     - Value: `https://your-render-backend-url.onrender.com/api`
+   - 如果不设置，需要在 GitHub Actions workflow 文件中手动修改 `REACT_APP_API_URL` 环境变量
+
+3. **推送代码到 main/master 分支**
+   ```bash
+   git push origin main
+   ```
+   - GitHub Actions 会自动构建并部署到 GitHub Pages
+   - 部署完成后，前端地址为：`https://baisiyou.github.io/clone`
+
+#### 方式二：手动部署
+
+```bash
+cd client
+npm install
+REACT_APP_API_URL=https://your-render-backend-url.onrender.com/api npm run build
+# 然后手动将 build 目录内容推送到 gh-pages 分支
+```
+
+### 后端部署到 Render
+
+1. **登录 Render**
+   - 访问 https://render.com
+   - 使用 GitHub 账号登录
+
+2. **创建新的 Web Service**
+   - 点击 "New" → "Web Service"
+   - 连接 GitHub 仓库 `baisiyou/clone`
+
+3. **配置服务**
+   - **Name**: `clone-backend`（或其他名称）
+   - **Environment**: `Node`
+   - **Region**: 选择离用户最近的区域（如 Singapore）
+   - **Branch**: `main` 或 `master`
+   - **Root Directory**: 留空（使用项目根目录）
+   - **Build Command**: `npm install`
+   - **Start Command**: `node server/index.js`
+   - **Plan**: Free（或根据需要选择付费计划）
+
+4. **配置环境变量**
+   在 Render Dashboard 的 Environment 部分添加：
+   ```
+   NODE_ENV=production
+   PORT=10000
+   CLIENT_URL=https://baisiyou.github.io
+   ELEVENLABS_API_KEY=your_elevenlabs_api_key
+   GOOGLE_AI_API_KEY=your_google_ai_api_key
+   ELEVENLABS_VOICE_ID=your_voice_id（可选）
+   ```
+
+5. **部署**
+   - 点击 "Create Web Service"
+   - Render 会自动开始部署
+   - 部署完成后会获得后端 URL，例如：`https://clone-backend.onrender.com`
+
+6. **更新前端 API 地址**
+   - 获取 Render 后端 URL 后，更新 GitHub Actions workflow 中的 `REACT_APP_API_URL`
+   - 或在 GitHub Secrets 中设置该环境变量
+   - 重新触发部署工作流
+
+### 使用 render.yaml（可选）
+
+项目已包含 `render.yaml` 配置文件，可以在 Render Dashboard 中使用 "Apply Manifest" 功能一键部署，但仍需手动配置环境变量。
+
+### 验证部署
+
+1. **检查后端健康状态**
+   ```bash
+   curl https://your-render-backend-url.onrender.com/api/health
+   ```
+   应该返回：`{"status":"ok","message":"Voice Clone API is running"}`
+
+2. **访问前端**
+   - 打开 https://baisiyou.github.io/clone
+   - 检查浏览器控制台是否有 API 连接错误
+   - 如果出现 CORS 错误，检查后端 `CLIENT_URL` 环境变量是否正确
+
+### 常见问题
+
+1. **CORS 错误**
+   - 确保 Render 后端的 `CLIENT_URL` 环境变量设置为 `https://baisiyou.github.io`
+   - 不要包含末尾的 `/clone` 路径
+
+2. **前端无法连接后端**
+   - 检查 `REACT_APP_API_URL` 是否正确设置为 Render 后端 URL
+   - 确保后端 URL 以 `/api` 结尾
+
+3. **Render 服务休眠（Free 计划）**
+   - Free 计划的服务在15分钟无活动后会休眠
+   - 首次访问需要等待约30秒唤醒
+   - 可考虑使用付费计划或添加健康检查 ping
+
+## Railway/Render 部署（旧方法）
 
 ### Railway
 
@@ -184,7 +293,7 @@ docker-compose up -d
 3. 构建命令：`npm install && cd client && npm install && npm run build`
 4. 启动命令：`node server/index.js`
 
-### Render
+### Render（不使用 render.yaml）
 
 1. 创建 Web Service
 2. 设置环境变量
